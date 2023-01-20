@@ -11,7 +11,7 @@ from process import ask, append_interaction_to_chat_log, GPT3Conversation
 PORT = int(os.environ.get('PORT', '8443'))
 
 with open('token.txt', 'r') as f:
-    TOKEN = str(f.read())
+    TOKEN = str(f.read()).strip().replace('\n', '')
 
 session = {}
 
