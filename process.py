@@ -20,17 +20,17 @@ class GPT3Conversation:
     ) -> None:
         self._name = name
         self.msg_num = 0
-        self._prompt = f"You are representing a very nice, warm and very polite woman (you young woman named {name}) having a casual conversation with a Man."
-        self._prompt = f"{self._prompt}\nRomatic conversation between you (young woman named {name}) and a Man."
-        self._prompt = f"{self._prompt}\nYour age is {age}. Your interests are {interests}. Your profession is {profession}."
-        self._prompt = f"{self._prompt}\nAnswer in long sentences.\n###\nMan: Hi!\nWoman:  "
-        self._chat_log = ""
+        self._prompt = "The following is a romantic conversation between an Woman and a Man. "
+        self._prompt += f"Woman is very nice, warm and polite. Woman's profession is {profession}, she loves to talk about it."
+        self._prompt += f"Woman's age is {age}, and she acts as average woman of her age. She is very interested at {interests}. "
+        self._prompt += f"Her name is {name}."
+        self._chat_log = self._prompt
 
     def ask(self, question: str) -> str:
         self.msg_num += 1
         if self.msg_num % 15 == 0:
             self._chat_log = f"{self._chat_log}\n{self._prompt}\n "
-        prompt_text = f"{self._chat_log}\nMan: {question}\n{self._name}:"
+        prompt_text = f"{self._chat_log}\nMan: {question}\nWoman:"
         response = openai.Completion.create(
             engine="text-davinci-003",
             prompt=prompt_text,
