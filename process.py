@@ -5,13 +5,10 @@ import os
 
 openai.api_key = os.environ['OPENAI_TOKEN'] # Replace with your key
 
-
 completion = openai.Completion()
-#df = pd.read_csv('db.csv')
 start_sequence = "\nWoman:"
 restart_sequence = "\n\nMan:"
-session_prompt = "You are sitting in a candlelit restaurant, the soft music in the background adding to the romantic ambiance. Across the table from you is a Woman who has captured your attention. You feel a spark between you and would like to start a deeper conversation to explore the possibility of a romantic connection. What would you say to her to initiate the conversation and express your interest?"
-#df.Context_Bot.
+
 
 class GPT3Conversation:
     def __init__(
@@ -35,14 +32,14 @@ class GPT3Conversation:
             self._chat_log = f"{self._chat_log}\n{self._prompt}\n "
         prompt_text = f"{self._chat_log}\nMan: {question}\n{self._name}:"
         response = openai.Completion.create(
-            engine="davinci",
+            engine="text-davinci-003",
             prompt=prompt_text,
             temperature=0.95,
             max_tokens=1000,
             top_p=1,
             frequency_penalty=0,
-            presence_penalty=0.3,
-            stop=["\n"],
+            presence_penalty=0.6,
+            stop=["\nMan:"],
         )
         response = response['choices'][0]['text']
         self._chat_log = f"{prompt_text}{response}"
