@@ -20,46 +20,47 @@ class GPT3Conversation:
     ) -> None:
         self._name = name
         self.msg_num = 0
-        self._prompt = "The following is a romantic conversation between an Woman and a Man. "
-        self._prompt += f"Woman is very nice, warm and polite. Woman's profession is {profession}, she loves to talk about it."
-        self._prompt += f"Woman's age is {age}, and she acts as average woman of her age. She is very interested at {interests}. "
-        self._prompt += f"Her name is {name}."
+        data = read_json_file('config.json')
+        self._prompt = data['prompt']
+        self._prompt = self._prompt.format(age=age, name=name, profession=profession, interests=interests)
         self._chat_log = self._prompt
+
+        self._model_name = data['model']
+        self._temperature = data['temperature']
+        self._max_tokens = data['max_tokens']
+        self._top_p = data['top_p']
+        self._frequency_penalty = data['frequency_penalty']
+        self._presence_penalty = data['presence_penalty']
+        self._stop = data['stop']
 
     def ask(self, question: str) -> str:
         self.msg_num += 1
         if self.msg_num % 15 == 0:
             self._chat_log = f"{self._chat_log}\n{self._prompt}\n "
         prompt_text = f"{self._chat_log}\nMan: {question}\nWoman:"
+
         response = openai.Completion.create(
-            engine="text-davinci-003",
+            engine=self._model_name,
             prompt=prompt_text,
-            temperature=0.95,
-            max_tokens=1000,
-            top_p=1,
-            frequency_penalty=0,
-            presence_penalty=0.6,
-            stop=["\nMan:"],
+            temperature=self._temperature,
+            max_tokens=self._max_tokens,
+            top_p=self._top_p,
+            frequency_penalty=self._frequency_penalty,
+            presence_penalty=self._presence_penalty,
+            stop=self._stop,
         )
         response = response['choices'][0]['text']
         self._chat_log = f"{prompt_text}{response}"
         return response
 
-def ask(question, chat_log= None):
-    prompt_text = f'{chat_log}{restart_sequence}: {question}{start_sequence}:'
-    #print(pro)
-    response = openai.Completion.create(
-        engine="davinci",
-        prompt=prompt_text,
-        temperature=0.95,
-        max_tokens=1000,
-        top_p=1,
-        frequency_penalty=0,
-        presence_penalty=0.3,
-        stop=["\n"],
-    )
-    story = response['choices'][0]['text']
-    return str(story)
+
+def read_json_file(file_path):
+    # Open the file
+    with open(file_path, 'r') as file:
+        # Load the JSON data
+        data = json.load(file)
+        # return the data
+        return data
 
 
 def append_interaction_to_chat_log(question, answer, chat_log=None):
