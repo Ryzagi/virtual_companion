@@ -41,12 +41,10 @@ def handle_context(update, context):
 
             bot_context = f"You are talking to :\nName: {name}\nAge: {age}\nInterests: {interests}\nProfession: {profession}\n\nPlease initiate the discussion with your companion {name}"
             update.message.reply_text(bot_context)
-
-
-
         else:
             handle_message(update, context)
-    except:
+    except Exception as e:
+        print(e)
         update.message.reply_text("Invalid context format. Please provide context in the format: Name, Age, "
                                   "Interests, Profession")
 
@@ -75,8 +73,8 @@ async def main():
     updater = telegram.ext.Updater(TOKEN, use_context=True)
     bot = updater.dispatcher
 
-    bot.add_handler(telegram.ext.CommandHandler("start", start))
-    bot.add_handler(telegram.ext.MessageHandler(telegram.ext.Filters.text, handle_context))
+    bot.add_handler(telegram.ext.CommandHandler("start", start, run_async=True))
+    bot.add_handler(telegram.ext.MessageHandler(telegram.ext.Filters.text, handle_context, run_async=True))
     # bot.add_handler(telegram.ext.MessageHandler(telegram.ext.Filters.text, handle_message))
     # bot.add_handler(telegram.ext.CommandHandler("help", help))
     # bot.add_handler(telegram.ext.CommandHandler("about", about))
@@ -92,7 +90,7 @@ async def main():
         webhook_url='https://web3taskbot.herokuapp.com/' + TOKEN
     )
 
-    await updater.idle()
+    updater.idle()
 
 
 if __name__ == '__main__':
