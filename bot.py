@@ -1,12 +1,9 @@
 import logging
 import os
 import asyncio
-# import pandas as pd
 import telegram.ext
-# from telegram import ReplyKeyboardMarkup
-import datetime
-import ast
-from process import ask, append_interaction_to_chat_log, GPT3Conversation
+
+from process import GPT3Conversation
 
 PORT = int(os.environ.get('PORT', '8443'))
 
