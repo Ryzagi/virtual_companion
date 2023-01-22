@@ -2,6 +2,7 @@ import openai
 #import pandas as pd
 
 import os
+import json
 
 openai.api_key = os.environ['OPENAI_TOKEN'] # Replace with your key
 
