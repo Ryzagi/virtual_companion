@@ -24,7 +24,7 @@ def start(update, context):
     # if update.message.from_user.id not in df.Conversation_ID.unique():
 
     update.message.reply_text("Hello! Welcome to Your Best Companion Bot. "
-                              "Please provide initial context, i.e. Name, Age, Interests, Profession.")
+                              "Please provide initial context, i.e. Name, Age, Interests, Profession, Gender.")
     if update.message.from_user.id in session:
         del session[update.message.from_user.id]
 
@@ -36,17 +36,19 @@ def handle_context(update, context):
     try:
         if update.message.from_user.id not in session:
             print(update.message.text.split(','))
-            name, age, interests, profession = update.message.text.split(",")
-            session[update.message.from_user.id] = GPT3Conversation(name, age, interests, profession)
+            name, age, interests, profession, gender = update.message.text.split(",")
 
-            bot_context = f"You are talking to :\nName: {name}\nAge: {age}\nInterests: {interests}\nProfession: {profession}\n\nPlease initiate the discussion with your companion {name}"
+            session[update.message.from_user.id] = GPT3Conversation(name, age, interests, profession, gender)
+
+            bot_context = f"You are talking to :\nName: {name}\nAge: {age}\nInterests: {interests}\nProfession: {profession}\nGender: {gender}\n\nPlease initiate the discussion with your companion {name}"
             update.message.reply_text(bot_context)
+
         else:
             handle_message(update, context)
     except Exception as e:
         print(e)
         update.message.reply_text("Invalid context format. Please provide context in the format: Name, Age, "
-                                  "Interests, Profession")
+                                  "Interests, Profession, Gender")
 
 
 def error(update, context):

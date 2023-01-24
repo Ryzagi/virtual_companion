@@ -7,7 +7,7 @@ import json
 openai.api_key = os.environ['OPENAI_TOKEN'] # Replace with your key
 
 completion = openai.Completion()
-start_sequence = "\nWoman:"
+start_sequence = "\nPerson:"
 restart_sequence = "\n\nMan:"
 
 
@@ -17,13 +17,14 @@ class GPT3Conversation:
             name: str = "Alisa",
             age: str = "25",
             interests: str = "Nothing",
-            profession: str = "Singer"
+            profession: str = "Singer",
+            gender: str = "Female"
     ) -> None:
         self._name = name
         self.msg_num = 0
         data = read_json_file('config.json')
         self._prompt = data['prompt']
-        self._prompt = self._prompt.format(age=age, name=name, profession=profession, interests=interests)
+        self._prompt = self._prompt.format(age=age, name=name, profession=profession, interests=interests, gender=gender)
         self._chat_log = self._prompt
 
         self._model_name = data['model']
@@ -38,7 +39,7 @@ class GPT3Conversation:
         self.msg_num += 1
         if self.msg_num % 15 == 0:
             self._chat_log = f"{self._chat_log}\n{self._prompt}\n "
-        prompt_text = f"{self._chat_log}\nMan: {question}\nWoman:"
+        prompt_text = f"{self._chat_log}\nMan: {question}\nPerson:"
 
         response = openai.Completion.create(
             engine=self._model_name,
