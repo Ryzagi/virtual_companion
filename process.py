@@ -40,8 +40,7 @@ class GPT3Conversation:
         if self.msg_num % 15 == 0:
             self._chat_log = f"{self._chat_log}\n{self._prompt}\n "
 
-        prompt_text = f"{self._chat_log}\nMan: {question}\nPerson:"
-        print(prompt_text)
+        prompt_text = f"{self._chat_log}\nMan: {question}\nPerson:"        
         response = openai.Completion.create(
             engine=self._model_name,
             prompt=prompt_text,
