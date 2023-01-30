@@ -1,8 +1,10 @@
 import logging
 import os
 import asyncio
+import time
+# import pandas as pd
 import telegram.ext
-
+from telegram import ChatAction
 from process import GPT3Conversation
 
 PORT = int(os.environ.get('PORT', '8443'))
@@ -22,7 +24,9 @@ def start(update, context):
     reply_keyboard = [["/start"]]  # "/help", "/about"]] "/contact"]]
     #    df = pd.read_csv('db.csv')
     # if update.message.from_user.id not in df.Conversation_ID.unique():
-
+    time.sleep(1)
+    context.bot.send_chat_action(chat_id=update.message.chat_id, action=ChatAction.TYPING)
+    time.sleep(3)
     update.message.reply_text("Hello! Welcome to Your Best Companion Bot. "
                               "Please provide initial context, i.e. Name, Age, Interests, Profession, Gender.")
     if update.message.from_user.id in session:
@@ -33,22 +37,26 @@ def handle_context(update, context):
     # global bot_context
     # df = pd.read_csv('db.csv')
     # if update.message.from_user.id not in df.Conversation_ID.unique():
+
     try:
         if update.message.from_user.id not in session:
+            time.sleep(1)
+            context.bot.send_chat_action(chat_id=update.message.chat_id, action=ChatAction.TYPING)
+            time.sleep(4)
             print(update.message.text.split(','))
             name, age, interests, profession, gender = update.message.text.split(",")
-
             session[update.message.from_user.id] = GPT3Conversation(name, age, interests, profession, gender)
 
             bot_context = f"You are talking to :\nName: {name}\nAge: {age}\nInterests: {interests}\nProfession: {profession}\nGender: {gender}\n\nPlease initiate the discussion with your companion {name}"
             update.message.reply_text(bot_context)
-
         else:
+            time.sleep(3)
+            context.bot.send_chat_action(chat_id=update.message.chat_id, action=ChatAction.TYPING)
             handle_message(update, context)
     except Exception as e:
         print(e)
         update.message.reply_text("Invalid context format. Please provide context in the format: Name, Age, "
-                                  "Interests, Profession, Gender")
+                                  "Interests, Profession")
 
 
 def error(update, context):
@@ -64,9 +72,16 @@ def handle_message(update, context):
     #    chat_log = bot_context
     #    #print('1',chat_log)
     # print('2', chat_log)
+    context.bot.send_chat_action(chat_id=update.message.chat_id, action=ChatAction.TYPING)
     answer = session[update.message.from_user.id].ask(update.message.text)
     # print('Man:', update.message.text, 'Woman:', answer)
+    length = len(answer)
 
+    context.bot.send_chat_action(chat_id=update.message.chat_id, action=ChatAction.TYPING)
+
+    time.sleep(length * 0.03)
+    context.bot.send_chat_action(chat_id=update.message.chat_id, action=ChatAction.TYPING)
+    time.sleep(2)
     # session['chat_log'] = append_interaction_to_chat_log(update.message.text, answer, chat_log)
     update.message.reply_text(f"{answer}")
 
