@@ -72,7 +72,14 @@ def handle_message(update, context):
     #    chat_log = bot_context
     #    #print('1',chat_log)
     # print('2', chat_log)
+    if update.message.text[0] == '/':
+        response = f"info: *{update.message.text[1:]}* has been added"
+        context.bot.send_message(chat_id=update.message.chat_id, text=response)
+        session[update.message.from_user.id].add_info(update.message.text[1:])
+        return context.bot.send_message(chat_id=update.message.chat_id, text="Continue, please")
+
     context.bot.send_chat_action(chat_id=update.message.chat_id, action=ChatAction.TYPING)
+
     answer = session[update.message.from_user.id].ask(update.message.text)
     # print('Man:', update.message.text, 'Woman:', answer)
     length = len(answer)

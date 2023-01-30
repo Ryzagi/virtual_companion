@@ -39,11 +39,9 @@ class GPT3Conversation:
         self.msg_num += 1
         if self.msg_num % 15 == 0:
             self._chat_log = f"{self._chat_log}\n{self._prompt}\n "
-        if question[0] == '/':
-            self._chat_log = f"{self._chat_log}\n{self._prompt}\n{question[1:]}\n"
 
         prompt_text = f"{self._chat_log}\nMan: {question}\nPerson:"
-
+        print(prompt_text)
         response = openai.Completion.create(
             engine=self._model_name,
             prompt=prompt_text,
@@ -57,6 +55,10 @@ class GPT3Conversation:
         response = response['choices'][0]['text']
         self._chat_log = f"{prompt_text}{response}"
         return response
+
+    def add_info(self, additional_information):
+        self._prompt = f"{self._prompt}\nAdditional information: {additional_information}\n"
+        self._chat_log = f"{self._chat_log}\n{self._prompt}\n"
 
 
 def read_json_file(file_path):
